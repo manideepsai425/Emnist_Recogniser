@@ -1,6 +1,5 @@
 # =============================================================================
 # main.py — FastAPI backend for EMNIST Recognition
-# Deploy on Render; frontend (Vercel) talks to /api/* endpoints.
 # =============================================================================
 import os, time, logging
 from contextlib import asynccontextmanager
@@ -16,24 +15,20 @@ from model import (
     load_model, predict_from_base64, predict_from_bytes,
 )
 
-# ─── Logging ─────────────────────────────────────────────────────────────────
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
 )
 log = logging.getLogger(__name__)
 
-# ─── Paths ───────────────────────────────────────────────────────────────────
 BASE_DIR     = Path(__file__).parent
 WEIGHTS_PATH = BASE_DIR / "weights" / "best_emnist_model.pth"
 
-# ─── App State ───────────────────────────────────────────────────────────────
 app_state: dict = {"model": None, "loaded_at": None, "error": None}
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Load model on startup; release on shutdown."""
     if WEIGHTS_PATH.exists():
         try:
             app_state["model"]     = load_model(WEIGHTS_PATH)
@@ -52,7 +47,6 @@ async def lifespan(app: FastAPI):
     log.info("Shutting down.")
 
 
-# ─── FastAPI app ─────────────────────────────────────────────────────────────
 app = FastAPI(
     title       = "EMNIST Recognition API",
     description = "Handwritten digit (0–9) and letter (A–Z) recognition powered by PyTorch.",
@@ -60,12 +54,12 @@ app = FastAPI(
     lifespan    = lifespan,
 )
 
-# CORS — allow Vercel frontend + local dev
 ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:3000",
-    os.getenv("FRONTEND_URL", ""),          # set on Render dashboard
-    "https://*.vercel.app",
+    os.getenv("FRONTEND_URL", ""),
+    "https://emnistrecogniser.vercel.app",
+    "https://emnistrecogniser2.vercel.app",
 ]
 ALLOWED_ORIGINS = [o for o in ALLOWED_ORIGINS if o]
 
@@ -77,7 +71,7 @@ app.add_middleware(
     allow_headers     = ["*"],
 )
 
-# ─── Request timing middleware ────────────────────────────────────────────────
+
 @app.middleware("http")
 async def add_process_time(request: Request, call_next):
     t0       = time.perf_counter()
@@ -86,7 +80,6 @@ async def add_process_time(request: Request, call_next):
     return response
 
 
-# ─── Helpers ─────────────────────────────────────────────────────────────────
 def _require_model() -> EMNISTNet:
     if app_state["model"] is None:
         raise HTTPException(
@@ -96,7 +89,6 @@ def _require_model() -> EMNISTNet:
     return app_state["model"]
 
 
-# ─── Schemas ─────────────────────────────────────────────────────────────────
 class CanvasRequest(BaseModel):
     image: str = Field(..., description="Base64-encoded PNG (data-URL or raw b64)")
 
@@ -110,7 +102,6 @@ class PredictionResponse(BaseModel):
     latency_ms: float | None = None
 
 
-# ─── Routes ──────────────────────────────────────────────────────────────────
 @app.get("/api/health")
 def health():
     return {
@@ -145,7 +136,6 @@ def model_info():
 
 @app.post("/api/predict/canvas", response_model=PredictionResponse)
 async def predict_canvas(body: CanvasRequest):
-    """Predict from a base64-encoded canvas drawing."""
     model = _require_model()
     try:
         t0     = time.perf_counter()
@@ -160,7 +150,6 @@ async def predict_canvas(body: CanvasRequest):
 
 @app.post("/api/predict/upload", response_model=PredictionResponse)
 async def predict_upload(file: UploadFile = File(...)):
-    """Predict from an uploaded image file (PNG / JPG / BMP / WEBP)."""
     model = _require_model()
 
     ALLOWED_TYPES = {"image/png", "image/jpeg", "image/jpg",
@@ -171,7 +160,7 @@ async def predict_upload(file: UploadFile = File(...)):
             detail      = f"Unsupported file type: {file.content_type}",
         )
 
-    MAX_SIZE = 10 * 1024 * 1024  # 10 MB
+    MAX_SIZE = 10 * 1024 * 1024
     raw = await file.read()
     if len(raw) > MAX_SIZE:
         raise HTTPException(status_code=413, detail="File too large (max 10 MB).")
@@ -187,7 +176,6 @@ async def predict_upload(file: UploadFile = File(...)):
         raise HTTPException(status_code=422, detail=f"Could not process image: {exc}")
 
 
-# ─── Global error handler ────────────────────────────────────────────────────
 @app.exception_handler(Exception)
 async def global_error_handler(request: Request, exc: Exception):
     log.error(f"Unhandled error on {request.url}: {exc}")
@@ -197,7 +185,6 @@ async def global_error_handler(request: Request, exc: Exception):
     )
 
 
-# ─── Dev entry point ─────────────────────────────────────────────────────────
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
