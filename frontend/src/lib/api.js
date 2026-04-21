@@ -1,6 +1,7 @@
 // src/lib/api.js — typed API client for the FastAPI backend
 
-const BASE = import.meta.env.VITE_API_URL ?? "";
+const BASE = import.meta.env.VITE_API_URL 
+  || "https://emnist-recogniser.onrender.com";
 
 async function request(path, options = {}) {
   const url = `${BASE}${path}`;
@@ -28,10 +29,7 @@ export async function getModelInfo() {
   return request("/api/model/info");
 }
 
-/**
- * POST /api/predict/canvas
- * @param {string} base64  — data-URL or raw b64 string
- */
+/** POST /api/predict/canvas */
 export async function predictCanvas(base64) {
   return request("/api/predict/canvas", {
     method:  "POST",
@@ -40,10 +38,7 @@ export async function predictCanvas(base64) {
   });
 }
 
-/**
- * POST /api/predict/upload
- * @param {File} file — image File object from input or dropzone
- */
+/** POST /api/predict/upload */
 export async function predictUpload(file) {
   const form = new FormData();
   form.append("file", file);
