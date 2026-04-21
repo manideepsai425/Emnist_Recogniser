@@ -48,7 +48,7 @@ export function MiniBar({ label, prob, highlight = false }) {
 
 export function Top5Bars({ top5 }) {
   if (!top5?.length) return null;
-  const best = top5[0]?.prob * 100 ?? 0;
+  const best = top5[0] ? top5[0].prob * 100 : 0;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
