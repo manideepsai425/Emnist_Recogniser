@@ -8,45 +8,31 @@
 
 ```
 emnist-app/
-├── backend/                        ← FastAPI API (deploy → Render)
-│   ├── main.py                     ← FastAPI routes & lifespan
-│   ├── model.py                    ← EMNISTNet architecture + inference
-│   ├── train.py                    ← Standalone training script
+├── backend/
+│   ├── main.py
+│   ├── model.py
+│   ├── train.py
 │   ├── requirements.txt
-│   ├── Dockerfile                  ← Used by Render
-│   ├── render.yaml                 ← Render IaC config
+│   ├── Dockerfile
+│   ├── render.yaml
 │   ├── .env.example
 │   └── weights/
-│       └── best_emnist_model.pth   ← ⚠️ You must generate this (see below)
+│       └── best_emnist_model.pth
 │
-├── frontend/                       ← React + Vite (deploy → Vercel)
-│   ├── src/
-│   │   ├── App.jsx                 ← Root layout + tab routing
-│   │   ├── main.jsx                ← React entry point
-│   │   ├── index.css               ← Global "Neural Ink" styles
-│   │   ├── components/
-│   │   │   ├── Header.jsx          ← Title + live API health badge
-│   │   │   ├── DrawingCanvas.jsx   ← Mouse/touch drawing canvas
-│   │   │   ├── ImageUpload.jsx     ← Drag-and-drop multi-file upload
-│   │   │   ├── ResultPanel.jsx     ← Prediction result + top-5 bars
-│   │   │   ├── ConfidenceBar.jsx   ← Animated probability bars
-│   │   │   ├── PredictionHistory.jsx ← Scrollable history sidebar
-│   │   │   └── NeuralGrid.jsx      ← Animated dot-grid background
-│   │   ├── hooks/
-│   │   │   ├── useCanvas.js        ← Drawing event logic
-│   │   │   └── usePrediction.js    ← API calls + history state
-│   │   └── lib/
-│   │       └── api.js              ← Typed fetch client
-│   ├── public/
-│   │   └── favicon.svg
-│   ├── index.html
-│   ├── vite.config.js
-│   ├── package.json
-│   ├── vercel.json
-│   └── .env.example
-│
-├── .gitignore
-└── README.md                       ← You are here
+└── frontend/
+    ├── src/
+    │   ├── App.jsx
+    │   ├── main.jsx
+    │   ├── index.css
+    │   └── lib/
+    │       └── api.js
+    ├── public/
+    │   └── favicon.svg
+    ├── index.html
+    ├── vite.config.js
+    ├── package.json
+    ├── vercel.json
+    └── .env.example
 ```
 
 ---
