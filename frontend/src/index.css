@@ -1,60 +1,90 @@
-/* ─────────────────────────────────────────────────────────────────────────────
-   GLOBAL RESETS & DARK THEME BASICS
-   ───────────────────────────────────────────────────────────────────────────── */
-*, *::before, *::after {
+/* ═══════════════════════════════════════════════════════════════════════════
+   Neural Ink · index.css
+   Minimal base resets — all app-level styling lives in App.jsx (GLOBAL_CSS).
+   This file handles only the foundational layer: box model, body, root.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Box model reset ── */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-:root {
-  /* Core typography for the dark theme */
-  font-family: 'Outfit', system-ui, sans-serif;
-  
-  /* Matches T.bg and T.white from the design tokens */
-  background-color: #06080F;
-  color: #FFFFFF;
-  color-scheme: dark;
-
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* ── Root document ── */
+html {
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /* Prevents layout shift from scrollbar appearance */
+  scrollbar-gutter: stable;
 }
 
-html, body, #root {
-  width: 100%;
+/* ── Body ── */
+body {
+  min-height: 100vh;
   min-height: 100dvh;
   overflow-x: hidden;
+  /* Fallback background before React hydrates */
+  background-color: #f6f8fa;
+  color: #1f2328;
+  /* Smooth font rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-body {
-  scroll-behavior: smooth;
+/* ── React root mount point ── */
+#root {
+  min-height: 100vh;
+  min-height: 100dvh;
+  isolation: isolate;
 }
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   SCROLLBAR STYLING (Matches Dark Theme)
-   ───────────────────────────────────────────────────────────────────────────── */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: #0C1120; /* Matches T.surface */
-}
-
-::-webkit-scrollbar-thumb {
-  background: #475569; /* Matches T.dim */
-  border-radius: 99px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8; /* Matches T.muted */
-}
-
-/* Prevent zoom on input focus in iOS devices */
-@media screen and (max-width: 768px) {
-  input, select, textarea {
-    font-size: 16px !important;
+/* ── Media: respect reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
+}
+
+/* ── Focus visible outline (accessibility) ── */
+:focus-visible {
+  outline: 2px solid #06b6d4;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Remove default button / input resets not covered by App.jsx ── */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+/* ── Image baseline fix ── */
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* ── Remove list styles globally (decorative lists only) ── */
+ul[role="list"],
+ol[role="list"] {
+  list-style: none;
 }
