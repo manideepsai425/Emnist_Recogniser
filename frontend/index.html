@@ -3,49 +3,34 @@
   <head>
     <meta charset="UTF-8" />
 
-    <!-- Viewport: mobile-first, prevent user-scaling quirks on iOS -->
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
 
-    <!-- PWA / browser chrome colour (light theme) -->
     <meta name="theme-color" content="#ffffff" />
     <meta name="color-scheme" content="light" />
 
-    <!-- Primary meta -->
     <title>Neural Ink · EMNIST Handwriting Recogniser</title>
     <meta
       name="description"
       content="Draw or upload a handwritten digit or letter and let EMNISTNet CNN — powered by PyTorch — identify it in milliseconds. 47 classes, EMNIST Balanced dataset."
     />
 
-    <!-- Open Graph (optional social sharing) -->
     <meta property="og:title"       content="Neural Ink · EMNIST Recogniser" />
     <meta property="og:description" content="Handwritten digit & letter recognition powered by PyTorch." />
     <meta property="og:type"        content="website" />
 
-    <!-- Favicon — replace /vite.svg with your own icon if desired -->
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
 
-    <!-- ── Google Fonts ──────────────────────────────────────────────────────
-         DM Sans  : clean, modern display font (GitHub-adjacent feel)
-         JetBrains Mono : crisp monospace for labels, confidence, history
-         preconnect hints tell the browser to open TCP connections early.
-    ─────────────────────────────────────────────────────────────────────── -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;0,9..40,900;1,9..40,400;1,9..40,500&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;0,9..40,900;1,9..40,400;1,9..40,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
 
-    <!-- ── Inline critical CSS ──────────────────────────────────────────────
-         Prevents a flash of unstyled / wrong-background content before
-         React boots and GLOBAL_CSS is injected.
-    ─────────────────────────────────────────────────────────────────────── -->
     <style>
-      /* Base reset duplicated here so the page never flashes black */
       *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
       html { scroll-behavior: smooth; }
       body {
@@ -58,7 +43,6 @@
       }
       #root { min-height: 100dvh; }
 
-      /* Skeleton loader shown while JS bundle parses */
       .app-skeleton {
         display: flex;
         flex-direction: column;
@@ -69,6 +53,7 @@
         color: #9ca3af;
         font-size: 0.875rem;
         font-family: 'JetBrains Mono', monospace;
+        font-weight: 700;
       }
       .app-skeleton-dot {
         display: inline-block;
@@ -87,10 +72,6 @@
   </head>
 
   <body>
-    <!--
-      React mounts here. The skeleton div is replaced once #root renders.
-      Keeping a visible fallback prevents a blank white flash on slow connections.
-    -->
     <div id="root">
       <div class="app-skeleton">
         <div style="display:flex;gap:6px;margin-bottom:4px;">
@@ -102,7 +83,6 @@
       </div>
     </div>
 
-    <!-- Vite dev-server / build entry point -->
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
